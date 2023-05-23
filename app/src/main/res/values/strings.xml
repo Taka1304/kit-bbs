@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">KIT BBS</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">ログイン</string>
+    <string name="welcome">"Welcome to KIT BBS !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <!--    ナビゲーション-->
+    <string name="title_event">イベント</string>
+    <string name="title_thread">スレッド</string>
+    <string name="title_settings">設定</string>
+    <!--    ログインメニュー-->
+    <string name="login">ログイン</string>
+    <string name="signup">新規登録</string>
+    <string name="signout">ログアウト</string>
+</resources>

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "306965501512",
+    "project_id": "kit-bbs",
+    "storage_bucket": "kit-bbs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:306965501512:android:997197d39b03a5b52dea7d",
+        "android_client_info": {
+          "package_name": "com.example.kit_bbs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "306965501512-8fsfuelhusn1acql1cecbpui6sg95gc2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kit_bbs",
+            "certificate_hash": "be00ec0d794aaf5e4f2f125a22ea932d0f01e923"
+          }
+        },
+        {
+          "client_id": "306965501512-rplknlehbm476lq6a1b8s4kth1rdgnli.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQRRk8xGFTaACFyYPVn3zySjAlEhMGY_I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "306965501512-rplknlehbm476lq6a1b8s4kth1rdgnli.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
