@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
@@ -52,7 +53,11 @@
             android:id="@+id/send_signup_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="新しくアカウントを作成する" />
+            android:backgroundTint="#fff"
+            android:text="新しくアカウントを作成する"
+            android:textColor="@color/purple_500"
+            app:strokeColor="@color/purple_500"
+            app:strokeWidth="2dp" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

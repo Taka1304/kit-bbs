@@ -23,7 +23,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     private BottomNavigationView bottomNavigationView;
     private EventFragment eventFragment;
     private ThreadFragment threadFragment;
@@ -31,11 +31,12 @@ public class MainActivity extends AppCompatActivity {
     private LoginFragment loginFragment;
     private SignupFragment signupFragment;
     private FirebaseAuth mAuth;
+    private FirebaseUser user;
 
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        user = mAuth.getCurrentUser();
 //        updateUI(currentUser);
     }
 
@@ -161,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
             });
         // [END send_email_verification]
     }
-
 
 
     private void updateUI(FirebaseUser user) {
