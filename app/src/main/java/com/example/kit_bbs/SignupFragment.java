@@ -134,7 +134,7 @@ public class SignupFragment extends Fragment {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentManager.popBackStack(); // signupFragmentをStackから消す
                 fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.replace(R.id.container, loginFragment);
+                fragmentTransaction.replace(R.id.fragment_container, loginFragment);
                 fragmentTransaction.commit();
             }
         });
