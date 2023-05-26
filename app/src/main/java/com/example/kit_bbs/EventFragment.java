@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventFragment extends Fragment {
+    private ProgressBar progressBar;
+    private ProgressBar recProgressBar;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,10 +42,17 @@ public class EventFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         LinearLayout newEventCardContainer = view.findViewById(R.id.newEventCardContainer);
+        LinearLayout recEventCardContainer = view.findViewById(R.id.recEventCardContainer);
+        progressBar = view.findViewById(R.id.newEventProgressBar);
+        recProgressBar = view.findViewById(R.id.recommendEventProgressBar);
+        // 非同期通信開始前にProgressBarを表示
+        progressBar.setVisibility(View.VISIBLE);
+        recProgressBar.setVisibility(View.VISIBLE);
         getEventData(new OnEventDataLoadedListener() {
             @Override
             public void onEventDataLoaded(List<Event> eventDataList) {
                 createCardViews(eventDataList, newEventCardContainer);
+                createCardViews(eventDataList, recEventCardContainer);
             }
         });
 
@@ -69,6 +80,8 @@ public class EventFragment extends Fragment {
                         }
 //                            Log.d(TAG, eventDataList.get(0).getTitle());
                         listener.onEventDataLoaded(eventDataList);
+                        progressBar.setVisibility(View.GONE);
+                        recProgressBar.setVisibility(View.VISIBLE);
                     } else {
                         Log.w(TAG, "Error getting documents.", task.getException());
                     }
