@@ -55,7 +55,6 @@ public class EventFragment extends Fragment {
                 createCardViews(eventDataList, recEventCardContainer);
             }
         });
-
     }
     // 非同期処理のためのコールバック
     public interface OnEventDataLoadedListener {
@@ -78,10 +77,9 @@ public class EventFragment extends Fragment {
                                 eventDataList.add(event);
                             }
                         }
-//                            Log.d(TAG, eventDataList.get(0).getTitle());
                         listener.onEventDataLoaded(eventDataList);
                         progressBar.setVisibility(View.GONE);
-                        recProgressBar.setVisibility(View.VISIBLE);
+                        recProgressBar.setVisibility(View.GONE);
                     } else {
                         Log.w(TAG, "Error getting documents.", task.getException());
                     }
@@ -90,7 +88,6 @@ public class EventFragment extends Fragment {
         return eventDataList;
     }
     private void createCardViews(List<Event> eventDataList, LinearLayout cardContainer) {
-
         for (Event event : eventDataList) {
             View cardView = LayoutInflater.from(getActivity()).inflate(R.layout.event_card, cardContainer, false);
 
@@ -111,9 +108,7 @@ public class EventFragment extends Fragment {
                     // カードがクリックされた時の処理
                 }
             });
-
             cardContainer.addView(cardView); // CardViewをLinearLayoutに追加
         }
     }
-
 }
