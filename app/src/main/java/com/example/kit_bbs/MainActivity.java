@@ -1,13 +1,8 @@
 package com.example.kit_bbs;
 
-import static androidx.constraintlayout.widget.ConstraintLayoutStates.TAG;
-
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,13 +10,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity{
     private BottomNavigationView bottomNavigationView;
@@ -31,6 +24,7 @@ public class MainActivity extends AppCompatActivity{
     private LoginFragment loginFragment;
     private SignupFragment signupFragment;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore mFirestore;
     private FirebaseUser user;
 
     @Override
@@ -40,7 +34,6 @@ public class MainActivity extends AppCompatActivity{
 //        updateUI(currentUser);
     }
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +48,7 @@ public class MainActivity extends AppCompatActivity{
         signupFragment = new SignupFragment();
 
         mAuth = FirebaseAuth.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
 
         setFragment(eventFragment, true); // 最初に表示するフラグメントを設定
 
@@ -86,7 +80,6 @@ public class MainActivity extends AppCompatActivity{
         int id = item.getItemId();
         switch (id) {
             case R.id.login_header:
-
                 setFragment(loginFragment, true);
                 return true;
             case R.id.signup_header:
@@ -103,68 +96,68 @@ public class MainActivity extends AppCompatActivity{
         fragmentTransaction.commit();
     }
 
-    // Firebase Authentication
-    private void createAccount(String email, String password) {
-        // [START create_user_with_email]
-        mAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "createUserWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        updateUI(user);
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                        Toast.makeText(MainActivity.this, "Authentication failed.",
-                                Toast.LENGTH_SHORT).show();
-                        updateUI(null);
-                    }
-                }
-            });
-        // [END create_user_with_email]
-    }
-    private void signIn(String email, String password) {
-        // [START sign_in_with_email]
-        mAuth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        updateUI(user);
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                        Toast.makeText(MainActivity.this, "Authentication failed.",
-                                Toast.LENGTH_SHORT).show();
-                        updateUI(null);
-                    }
-                }
-            });
-        // [END sign_in_with_email]
-    }
-
-    private void sendEmailVerification() {
-        // Send verification email
-        // [START send_email_verification]
-        final FirebaseUser user = mAuth.getCurrentUser();
-        user.sendEmailVerification()
-            .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    // Email sent
-                }
-            });
-        // [END send_email_verification]
-    }
-
-
-    private void updateUI(FirebaseUser user) {
-
-    }
+//    // Firebase Authentication
+//    private void createAccount(String email, String password) {
+//        // [START create_user_with_email]
+//        mAuth.createUserWithEmailAndPassword(email, password)
+//            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                @Override
+//                public void onComplete(@NonNull Task<AuthResult> task) {
+//                    if (task.isSuccessful()) {
+//                        // Sign in success, update UI with the signed-in user's information
+//                        Log.d(TAG, "createUserWithEmail:success");
+//                        FirebaseUser user = mAuth.getCurrentUser();
+//                        updateUI(user);
+//                    } else {
+//                        // If sign in fails, display a message to the user.
+//                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
+//                        Toast.makeText(MainActivity.this, "Authentication failed.",
+//                                Toast.LENGTH_SHORT).show();
+//                        updateUI(null);
+//                    }
+//                }
+//            });
+//        // [END create_user_with_email]
+//    }
+//    private void signIn(String email, String password) {
+//        // [START sign_in_with_email]
+//        mAuth.signInWithEmailAndPassword(email, password)
+//            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                @Override
+//                public void onComplete(@NonNull Task<AuthResult> task) {
+//                    if (task.isSuccessful()) {
+//                        // Sign in success, update UI with the signed-in user's information
+//                        Log.d(TAG, "signInWithEmail:success");
+//                        FirebaseUser user = mAuth.getCurrentUser();
+//                        updateUI(user);
+//                    } else {
+//                        // If sign in fails, display a message to the user.
+//                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+//                        Toast.makeText(MainActivity.this, "Authentication failed.",
+//                                Toast.LENGTH_SHORT).show();
+//                        updateUI(null);
+//                    }
+//                }
+//            });
+//        // [END sign_in_with_email]
+//    }
+//
+//    private void sendEmailVerification() {
+//        // Send verification email
+//        // [START send_email_verification]
+//        final FirebaseUser user = mAuth.getCurrentUser();
+//        user.sendEmailVerification()
+//            .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Void> task) {
+//                    // Email sent
+//                }
+//            });
+//        // [END send_email_verification]
+//    }
+//
+//
+//    private void updateUI(FirebaseUser user) {
+//
+//    }
 }
