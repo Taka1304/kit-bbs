@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Event implements Serializable {
+    private String id;
     private String content;
     private String location;
     private String title;
@@ -21,6 +22,11 @@ public class Event implements Serializable {
         // デフォルトのコンストラクタ
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() { return id; }
     public String getContent() {
         return content;
     }

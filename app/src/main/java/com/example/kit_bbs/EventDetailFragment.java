@@ -1,5 +1,6 @@
 package com.example.kit_bbs;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -8,15 +9,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,9 +49,6 @@ public class EventDetailFragment extends Fragment {
         args.putSerializable("event", event);
         fragment.setArguments(args);
         return fragment;
-    }
-    public EventDetailFragment() {
-        // Required empty public constructor
     }
     @Nullable
     @Override
@@ -74,7 +79,7 @@ public class EventDetailFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // 申し込むボタン
-
+                    showConfirmationDialog();
                 }
             });
         } else {
@@ -82,7 +87,6 @@ public class EventDetailFragment extends Fragment {
             // 未ログインの場合はログインを促すメッセージを表示
             joinButton.setText("申し込むにはログインしてください");
             joinButton.setOnClickListener(new View.OnClickListener() {
-
                 @Override
                 public void onClick(View v) {
                     // ログインしろボタン
@@ -127,15 +131,77 @@ public class EventDetailFragment extends Fragment {
         eventContentTextView.setText(event.getContent());
         eventLocationTextView.setText(event.getLocation());
         Date startDate = event.getStartDateTime().toDate();
-        String startDateTimeFormatted = new SimpleDateFormat("yyyy/MM/dd (E)", Locale.getDefault()).format(startDate);
+        String startDateTimeFormatted = formatDate(startDate);
         eventStartDateTimeTextView.setText(startDateTimeFormatted);
 
         // End DateTime
         Date endDate = event.getEndDateTime().toDate();
-        String endDateTimeFormatted = new SimpleDateFormat("yyyy/MM/dd (E)", Locale.getDefault()).format(endDate);
+        String endDateTimeFormatted = formatDate(endDate);
         eventEndDateTimeTextView.setText(endDateTimeFormatted);
         eventMaxParticipantsTextView.setText(String.valueOf(event.getMaxParticipants()));
         eventCurrentParticipantsTextView.setText(String.valueOf(event.getCurrentParticipants()));
+    }
+    private void showConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("参加確認")
+                .setMessage("このイベントに申し込みます。よろしいですか？")
+                .setPositiveButton("はい", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 申し込む処理を実行
+                        joinEvent();
+                    }
+                })
+                .setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // キャンセル時の処理
+                    }
+                })
+                .show();
+    }
+
+    private void joinEvent() {
+        // 申し込む処理を記述
+        // FirebaseAuthから現在のユーザーを取得
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            // Firestoreの"users"コレクションにアクセス
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference userRef = db.collection("users").document(userId);
+
+            // 参加するイベントの情報を作成
+            Event event = (Event) getArguments().getSerializable("event");
+            String eventId = event.getId();
+            String eventTitle = event.getTitle();
+            String eventStartDateTime = formatDate(event.getStartDateTime().toDate());
+            String eventEndDateTime = formatDate(event.getEndDateTime().toDate());
+            String eventLocation = event.getLocation();
+
+            // "users"コレクションのユーザーのドキュメントに参加するイベント情報を追加
+            userRef.update("event", FieldValue.arrayUnion(
+                    new UsersEvent(eventId, eventTitle, eventStartDateTime, eventEndDateTime, eventLocation)))
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // 参加申し込み成功時の処理
+                            Toast.makeText(getContext(), "参加申し込みが成功しました", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // 参加申し込み失敗時の処理
+                            Toast.makeText(getContext(), "エラーが発生しました", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+        }
+    }
+    private String formatDate(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd (E)", Locale.getDefault());
+        return dateFormat.format(date);
     }
 }
 

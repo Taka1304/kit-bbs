@@ -77,6 +77,7 @@ public class EventFragment extends Fragment {
                         for (DocumentSnapshot document : task.getResult()) {
                             if (task.isSuccessful()) {
                                 Event event = document.toObject(Event.class);
+
                                 eventDataList.add(event);
                             }
                         }
