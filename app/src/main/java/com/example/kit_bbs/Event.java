@@ -9,6 +9,7 @@ public class Event {
     private String location;
     private String title;
     private String userId;
+    private String thumbnailId;
     private int currentParticipants;
     private int maxParticipants;
     private Timestamp endDateTime;
@@ -35,6 +36,8 @@ public class Event {
         return userId;
     }
 
+    public String getThumbnailId() {return thumbnailId;}
+
     public Timestamp getStartDateTime() {
         return startDateTime;
     }
@@ -50,7 +53,6 @@ public class Event {
     public int getMaxParticipants() {
         return maxParticipants;
     }
-
     public ArrayList<String> getTags() {
         return tags;
     }

@@ -27,6 +27,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class EventFragment extends Fragment {
     private ProgressBar progressBar;
@@ -49,6 +50,7 @@ public class EventFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         recProgressBar.setVisibility(View.VISIBLE);
         getEventData(new OnEventDataLoadedListener() {
+            // Data fetch後に動作する
             @Override
             public void onEventDataLoaded(List<Event> eventDataList) {
                 createCardViews(eventDataList, newEventCardContainer);
@@ -96,10 +98,29 @@ public class EventFragment extends Fragment {
             TextView textViewTitle = cardView.findViewById(R.id.textViewTitle);
             TextView textViewHashtags = cardView.findViewById(R.id.textViewHashtags);
 
-            // データをセット
-            imageViewThumbnail.setImageResource(R.drawable.event_image);
+            // TODO: 同じイベントは同じランダムサムネを採用する
+            String thumbnailId = event.getThumbnailId();
+//            Log.d(TAG, thumbnailId);
+            int resourceId = getResources().getIdentifier(thumbnailId, "drawable", requireContext().getPackageName());
+            if (resourceId == 0) {
+                // 画像リソースが見つからなかった場合
+                ArrayList<Integer> noImages = new ArrayList<>();
+                noImages.add(R.drawable.no_image01);
+                noImages.add(R.drawable.no_image02);
+                noImages.add(R.drawable.no_image03);
+                Random random = new Random();
+                resourceId = noImages.get(random.nextInt(3));
+            }
+            imageViewThumbnail.setImageResource(resourceId);
             textViewTitle.setText(event.getTitle());
-            textViewHashtags.setText(TextUtils.join(", ", event.getTags()));
+
+            // タグに#を付ける
+            List<String> tags = event.getTags();
+            List<String> formattedTags = new ArrayList<>();
+            for (String tag : tags) {
+                formattedTags.add("#" + tag);
+            }
+            textViewHashtags.setText(TextUtils.join(" ", formattedTags));
 
             // CardViewにクリックイベントを追加
             cardView.setOnClickListener(new View.OnClickListener() {
