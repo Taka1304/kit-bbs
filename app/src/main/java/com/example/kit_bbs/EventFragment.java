@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -127,6 +128,14 @@ public class EventFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // カードがクリックされた時の処理
+                    // 詳細画面のフラグメントを作成
+                    EventDetailFragment fragment = EventDetailFragment.newInstance(event);
+
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
                 }
             });
             cardContainer.addView(cardView); // CardViewをLinearLayoutに追加

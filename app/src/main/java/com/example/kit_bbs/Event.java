@@ -2,9 +2,10 @@ package com.example.kit_bbs;
 
 import com.google.firebase.Timestamp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Event {
+public class Event implements Serializable {
     private String content;
     private String location;
     private String title;
