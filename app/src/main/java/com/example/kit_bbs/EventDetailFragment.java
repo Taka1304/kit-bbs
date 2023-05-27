@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class EventDetailFragment extends Fragment {
+    private Fragment loginFragment;
     private TextView eventTitleTextView;
     private TextView eventTagsTextView;
     private TextView eventContentTextView;
@@ -32,8 +35,6 @@ public class EventDetailFragment extends Fragment {
     private TextView eventMaxParticipantsTextView;
     private TextView eventCurrentParticipantsTextView;
     private Button joinButton;
-    private FirebaseAuth mAuth;
-    private FirebaseUser user;
     public static EventDetailFragment newInstance(Event event) {
         EventDetailFragment fragment = new EventDetailFragment();
         Bundle args = new Bundle();
@@ -64,14 +65,35 @@ public class EventDetailFragment extends Fragment {
             }
         }
         joinButton = view.findViewById(R.id.joinButton);
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
-        // 「参加する」ボタンのクリックイベントを設定
-        joinButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // ログイン済みの場合は「申し込む」ボタンを表示
+            joinButton.setText("申し込む");
+            joinButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 申し込むボタン
+
+                }
+            });
+        } else {
+            loginFragment = new LoginFragment();
+            // 未ログインの場合はログインを促すメッセージを表示
+            joinButton.setText("申し込むにはログインしてください");
+            joinButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // ログインしろボタン
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.fragment_container, loginFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                }
+            });
+        }
 
         return view;
     }
