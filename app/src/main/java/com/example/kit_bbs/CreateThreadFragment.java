@@ -133,7 +133,7 @@ public class CreateThreadFragment extends Fragment {
                     threadsCollection.document(threadId).set(thread);
                 })
                 .addOnFailureListener(e -> {
-
+                    // みすったとき
                 });
 
         closeFragment();

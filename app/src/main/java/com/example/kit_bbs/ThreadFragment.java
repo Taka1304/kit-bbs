@@ -1,6 +1,7 @@
 package com.example.kit_bbs;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,11 +90,16 @@ public class ThreadFragment extends Fragment {
             View itemView = getLayoutInflater().inflate(R.layout.thread_item, null);
             TextView titleTextView = itemView.findViewById(R.id.titleTextView);
             TextView timestampTextView = itemView.findViewById(R.id.timestampTextView);
-            TextView usernameTextView = itemView.findViewById(R.id.usernameTextView);
+            TextView tagsTextView = itemView.findViewById(R.id.tagsTextView);
 
             titleTextView.setText(thread.getTitle());
             timestampTextView.setText(formatDate(thread.getCreatedAt().toDate()));
-            usernameTextView.setText(thread.getUserId());
+            List<String> tags = thread.getTags();
+            List<String> formattedTags = new ArrayList<>();
+            for (String tag : tags) {
+                formattedTags.add("#" + tag);
+            }
+            tagsTextView.setText(TextUtils.join(" ", formattedTags));
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
