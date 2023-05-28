@@ -22,39 +22,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class SignupFragment extends Fragment {
-//    public interface MyListener {
-//        public void onClickButton();
-//    }
-//    private MyListener myListener;
     private FirebaseAuth mAuth;
     private EditText etEmail;
     private EditText etPassword;
-
     private Button submitButton;
     private Button cancelButton;
     private Button switchButton;
     private String email;
     private String password;
     private String email_pattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.kanazawa-it\\.ac\\.jp$";
-//    @Override
-//    public void onAttach(Context context) {
-//        // contextクラスがMyListenerを実装しているかをチェックする
-//        super.onAttach(context);
-//        if (context instanceof MyListener) {
-//            // リスナーをここでセットする
-//            myListener = (MyListener) context;
-//        }
-//    }
-
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        // 画面からFragmentが離れたあとに処理が呼ばれることを避けるためにNullで初期化しておく
-//        myListener = null;
-//    }
     private void createAccount(String email, String password) {
         // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -66,19 +47,28 @@ public class SignupFragment extends Fragment {
                             Log.d(TAG, "createUserWithEmail:success");
                             Toast.makeText(getContext(), "アカウントを作成しました！", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
+
+                            CollectionReference usersCollection = FirebaseFirestore.getInstance().collection("users");
+                            User userData = new User();
+                            // add()メソッドを使用してデータを追加する
+                            usersCollection.document(user.getUid()).set(userData)
+                                    .addOnSuccessListener(documentReference -> {
+                                        //　成功したとき
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // みすったとき
+                                    });
+
                             // 元居たフラグメントに戻る
                             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                             fragmentManager.popBackStack();
-                            // updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
-                            // updateUI(null);
                         }
                     }
                 });
-        // [END create_user_with_email]
     }
 
     @Nullable
