@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,8 +19,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -31,13 +28,22 @@ import java.util.List;
 import java.util.Random;
 
 public class EventFragment extends Fragment {
-    private ProgressBar progressBar;
-    private ProgressBar recProgressBar;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_event, container, false);
+        View view = inflater.inflate(R.layout.fragment_event, container, false);
+        LinearLayout newEventCardContainer = view.findViewById(R.id.newEventCardContainer);
+        LinearLayout recEventCardContainer = view.findViewById(R.id.recEventCardContainer);
+        // スケルトンカードを表示
+        for (int i = 0; i < 2; i++) {
+            View skeletonCard1 = LayoutInflater.from(getContext()).inflate(R.layout.event_card_skeleton, newEventCardContainer, false);
+            newEventCardContainer.addView(skeletonCard1);
+            View skeletonCard2 = LayoutInflater.from(getContext()).inflate(R.layout.event_card_skeleton, recEventCardContainer, false);
+            recEventCardContainer.addView(skeletonCard2);
+        }
+
+        return view;
     }
 
     @Override
@@ -45,15 +51,12 @@ public class EventFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         LinearLayout newEventCardContainer = view.findViewById(R.id.newEventCardContainer);
         LinearLayout recEventCardContainer = view.findViewById(R.id.recEventCardContainer);
-        progressBar = view.findViewById(R.id.newEventProgressBar);
-        recProgressBar = view.findViewById(R.id.recommendEventProgressBar);
-        // 非同期通信開始前にProgressBarを表示
-        progressBar.setVisibility(View.VISIBLE);
-        recProgressBar.setVisibility(View.VISIBLE);
         getEventData(new OnEventDataLoadedListener() {
             // Data fetch後に動作する
             @Override
             public void onEventDataLoaded(List<Event> eventDataList) {
+                newEventCardContainer.removeAllViews();
+                recEventCardContainer.removeAllViews();
                 createCardViews(eventDataList, newEventCardContainer);
                 createCardViews(eventDataList, recEventCardContainer);
             }
@@ -66,7 +69,6 @@ public class EventFragment extends Fragment {
     private List<Event> getEventData(final OnEventDataLoadedListener listener) {
         List<Event> eventDataList = new ArrayList<>();
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("event").get()
@@ -77,13 +79,10 @@ public class EventFragment extends Fragment {
                         for (DocumentSnapshot document : task.getResult()) {
                             if (task.isSuccessful()) {
                                 Event event = document.toObject(Event.class);
-
                                 eventDataList.add(event);
                             }
                         }
                         listener.onEventDataLoaded(eventDataList);
-                        progressBar.setVisibility(View.GONE);
-                        recProgressBar.setVisibility(View.GONE);
                     } else {
                         Log.w(TAG, "Error getting documents.", task.getException());
                     }

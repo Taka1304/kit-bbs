@@ -4,7 +4,8 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:layout_marginBottom="56dp">
 
     <LinearLayout
         android:id="@+id/eventWrapper"
@@ -57,12 +58,6 @@
 
             </HorizontalScrollView>
 
-            <ProgressBar
-                android:id="@+id/newEventProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -96,12 +91,6 @@
                 </LinearLayout>
 
             </HorizontalScrollView>
-
-            <ProgressBar
-                android:id="@+id/recommendEventProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
 
         </LinearLayout>
 
